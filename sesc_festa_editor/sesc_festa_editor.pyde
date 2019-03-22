@@ -23,6 +23,7 @@ pos_cores = 0
 
 paleta = True
 salva_pdf = False
+scroll_paleta = False
 
 def setup():
     global cols, fils, grade
@@ -43,7 +44,7 @@ def draw():
     global pos_cores, tam_pincel
     if salva_pdf:
         beginRecord(PDF, "Mexicano.pdf")
-    
+
     noStroke()  # formas sem contorno
     for i in range(fils):
         for j in range(cols):
@@ -63,7 +64,7 @@ def draw():
                         elif est_pincel == 2:
                             if (i + j) % 2 == 1:
                                 grade[pos] = cores[pos_cores]
-                                
+
                     if mouseButton == RIGHT:
                         grade[pos] = branco
                     if mouseButton == CENTER:
@@ -78,7 +79,7 @@ def draw():
         endRecord()
         global salva_pdf
         salva_pdf = False
-        
+
     # PALETA DE CORES
     if paleta:
         for i, cor in enumerate(cores):
@@ -112,9 +113,25 @@ def keyPressed():
     if key == "S":
         global salva_pdf
         salva_pdf = True
+    if keyCode == SHIFT:
+        global scroll_paleta
+        scroll_paleta = True
+        
+def keyReleased():
+    if keyCode == SHIFT:
+        global scroll_paleta
+        scroll_paleta = False
 
 def mouseWheel(event):
-    global tam_pincel
-    tam_pincel += event.getCount()
-    if tam_pincel < 1:
-        tam_pincel = 1
+    global tam_pincel, pos_cores
+
+    if scroll_paleta:
+        pos_cores += event.getCount()
+        if pos_cores < 0:
+            pos_cores = len(cores) - 1
+        elif pos_cores > len(cores) - 1:
+            pos_cores = 0
+    else:
+        tam_pincel += event.getCount()
+        if tam_pincel < 1:
+            tam_pincel = 1
