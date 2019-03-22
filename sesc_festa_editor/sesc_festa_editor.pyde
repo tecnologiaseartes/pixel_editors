@@ -3,7 +3,7 @@ Editor de pixels - para padronagem Mexicana!
 Sesc Av. Paulista - FestA 2019
 """
 
-tam = 30
+tam = 60
 
 verde = color(0, 200, 0)
 vermelho = color(200, 0, 0)
@@ -24,18 +24,19 @@ def setup():
     size(600, 600)
     cols = width / tam
     fils = height / tam
-    grade = [255] * cols * fils
+    grade = [roxo] * cols * fils
 
-    for i in range(fils):
-        for j in range(cols):
-            pos = j + cols * i
-            if (i + j) % 2 == 0:
-                grade[pos] = 255
-            else:
-                grade[pos] = color(200, 0, 0)
+    # for i in range(fils):
+    #     for j in range(cols):
+    #         pos = j + cols * i
+    #         if (i + j) % 2 == 0:
+    #             grade[pos] = 255
+    #         else:
+    #             grade[pos] = color(200, 0, 0)
 
 def draw():
-    noStroke()
+    global pos_cores
+    noStroke() # formas sem contorno
     for i in range(fils):
         for j in range(cols):
             x = j * tam
@@ -45,16 +46,37 @@ def draw():
             if mouse_over(x, y, tam):
                 fill(cores[pos_cores])
                 if mousePressed:
-                    grade[pos] = cores[pos_cores]
+                    # if keyPressed and keyCode == SHIFT:
+                    #     grade[pos] = branco
+                    # else:
+                    #     grade[pos] = cores[pos_cores]
+                    if mouseButton == LEFT:
+                        grade[pos] = cores[pos_cores]
+                    if mouseButton == RIGHT:
+                        grade[pos] = branco
+                    if mouseButton == CENTER:
+                        for i, cor in enumerate(cores):
+                            if cor == grade[pos]:
+                                pos_cores = i
+                                break
+                       
+     
+                        
             rect(x, y, tam, tam)
+            
+    # PALETA DE CORES
 
     for i, cor in enumerate(cores):
+
         fill(cor)
+
         rect(i * 30, 0, 30, 30)
+
     noFill()
+
     strokeWeight(5)
-    stroke(0)
-    rect(pos_cores * 30, 0, 30, 30)
+
+    stroke(0)    rect(pos_cores * 30, 0, 30, 30)
 
 def mouse_over(x, y, tam):
     return (x < mouseX < x + tam and
@@ -63,4 +85,4 @@ def mouse_over(x, y, tam):
 def keyPressed():
     global pos_cores
     if key == ' ':
-        pos_cores = (pos_cores + 1) % len(cores) 
+        pos_cores = (pos_cores + 1) % len(cores)
