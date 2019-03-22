@@ -22,7 +22,7 @@ cores = [verde, azul_marinho,
          branco, laranja, roxo]
 pos_cores = 0
 
-paleta = True
+paleta = False
 salva_pdf = False
 scroll_paleta = False
 edita_cor = False
@@ -95,19 +95,19 @@ def mouse_over(x, y, tp):
         return (dentro(mouseX, mouseY) or
                 dentro(mouseX, height - mouseY) or
                 dentro(width - mouseX, mouseY) or
-                dentro(width - mouseX, height - mouseY)  
+                dentro(width - mouseX, height - mouseY)
                 )
-        
+
 def keyPressed():
     global pos_cores, est_pincel, paleta, salva_pdf
     if key == ' ':
         pos_cores = (pos_cores + 1) % len(cores)
     if key == '+' or key == '=':
         est_pincel = (1 + est_pincel) % 3
-        println("Pincel modo: "+ str(est_pincel))
+        println("Pincel modo: " + str(est_pincel))
     if key == '-' and est_pincel > 0:
         est_pincel -= 1    # tam_pincel = tam_pincel - 1
-        println("Pincel modo: "+ str(est_pincel))
+        println("Pincel modo: " + str(est_pincel))
     if key == "p":
         paleta = not paleta
     if key == "s":
@@ -127,8 +127,9 @@ def keyPressed():
     if key == "m":
         global mirror_tosco
         mirror_tosco = (mirror_tosco + 1) % 4
-    if key == "h": help()
-    
+    if key == "h":
+        help()
+
 def keyReleased():
     if keyCode == SHIFT:
         global scroll_paleta
@@ -152,31 +153,18 @@ def mouseWheel(event):
         else:
             vel = 1
         c = cores[pos_cores]
-        r, g, b = red(c), green(c), blue(c)
+        componentes = [red(c), green(c), blue(c)]
         #  rect(50, 100, 510, 50)
-        pos_y = 100
-        if (50 < mouseX < 560 and pos_y < mouseY < pos_y + 50):
-            r += event.getCount() * vel
-            if r < 0:
-                r = 0
-            elif r > 255:
-                r = 255
-        pos_y = 200
-        if (50 < mouseX < 560 and pos_y < mouseY < pos_y + 50):
-            g += event.getCount() * vel
-            if g < 0:
-                g = 0
-            elif g > 255:
-                g = 255
-        pos_y = 300
-        if (50 < mouseX < 560 and pos_y < mouseY < pos_y + 50):
-            b += event.getCount() * vel
-            if b < 0:
-                b = 0
-            elif b > 255:
-                b = 255
+        for i in range(3):
+            pos_y = 100 + i * 100
+            if (50 < mouseX < 560 and pos_y < mouseY < pos_y + 50):
+                componentes[i] += event.getCount() * vel
+                if componentes[i] < 0:
+                    componentes[i] = 0
+                elif componentes[i] > 255:
+                    componentes[i] = 255
         # REMONTA COR EDITADA
-        cores[pos_cores] = color(r, g, b)
+        cores[pos_cores] = color(*componentes)
     else:
         tam_pincel += event.getCount()
         if tam_pincel < 1:
